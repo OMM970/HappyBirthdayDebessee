@@ -503,7 +503,9 @@
         pg.style.animation = '';
         document.getElementById('progress').style.width = progressSteps[n-1];
         document.getElementById('pageCounter').textContent = counterLabels[n-1];
-        if (n === 2) initSlideshow();
+        if (n === 2)  preloadImages(() => {
+            initSlideshow();
+        });
         if (n === 3) initTyping();
         if (n === 4) initBirthday();
         if (n === 5) {
@@ -675,6 +677,25 @@
         music.volume=0.4;
         music.play();
     }, { once: true });
+    let loadedImages = 0;
+    const totalImages = IMAGES.length;
+
+    function preloadImages(callback) {
+        IMAGES.forEach(img => {
+            const image = new Image();
+            image.src = img.src;
+
+            image.onload = () => {
+                loadedImages++;
+                if (loadedImages === totalImages) callback();
+            };
+
+            image.onerror = () => {
+                loadedImages++;
+                if (loadedImages === totalImages) callback();
+            };
+        });
+    }
 </script>
 </body>
 </html>
